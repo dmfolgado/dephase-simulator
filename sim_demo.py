@@ -35,6 +35,12 @@ axs[4].plot(D.t, D.streams[0], color="#6479BC")
 axs[4].plot(D.nt, D.streams[1], color="#F0B08D")
 axs[4].set_title("The combination of three transformations")
 
+# How to access the time signals from the time to the sample domain
+# The current approach does not work well with time lags (e.g. 2 and 5)
+D = SimDephaser([x+y, -y], max_init_time_lag=0, linear_dephasing=1, non_linear_dephasing=1)
+y = D.streams[0]
+z = D.streams_interp
+
 fig.tight_layout()
 
 plt.show()

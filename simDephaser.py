@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.interpolate as it
 
 
 def linear_dephasing(t, alpha):
@@ -34,6 +35,7 @@ class SimDephaser:
         self.non_linear_dephasing = non_linear_dephasing
 
         self.nt = self.get_unsync_time_vector()
+        self.streams_interp = self.get_unsync_streams_interpolated()
 
     def get_base_time_vector(self):
         return np.arange(0, len(self.streams[0])/self.sampling_frequency, (1/self.sampling_frequency))
@@ -50,3 +52,8 @@ class SimDephaser:
 
     def get_unsync_streams(self, streams):
         return np.tile(streams[0], self.n_repeat), np.tile(streams[1], self.n_repeat)
+
+    def get_unsync_streams_interpolated(self):
+        # TODO: We still need to think a better solution for the cases where an offset is present
+        _nt = self.nt - self.nt[0]
+        return it.interp1d(_nt, self.streams[1])(np.arange(0, _nt[-1], self.t[1]))
